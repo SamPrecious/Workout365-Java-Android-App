@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:defaultValue="5"
+        android:title="Default Reps"
+        android:key="reps"
+        android:summary="Enter your default reps"/>
+    <EditTextPreference
+        android:defaultValue="5"
+        android:title="Default Sets"
+        android:key="sets"
+        android:summary="Enter your default sets"/>
+</PreferenceScreen>

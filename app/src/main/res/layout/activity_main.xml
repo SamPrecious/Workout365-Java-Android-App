@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:textColor="#FFFFFF"
+
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="33dp">
+
+        <LinearLayout
+            android:id="@+id/navbar"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="#FFA500">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></Space>
+
+            <ImageButton
+                android:id="@+id/workoutsButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginVertical="8dp"
+                android:layout_marginStart="27dp"
+                android:layout_marginBottom="10dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:onClick="viewWorkout"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/calendaricon" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></Space>
+
+            <ImageButton
+                android:id="@+id/routineButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginVertical="8dp"
+                android:layout_marginStart="27dp"
+                android:layout_marginBottom="10dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:onClick="viewRoutine"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/routineicon" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></Space>
+
+            <ImageButton
+                android:id="@+id/exerciseButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginVertical="8dp"
+                android:layout_marginStart="27dp"
+                android:layout_marginBottom="10dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:onClick="viewExercise"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/workouticon" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></Space>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/mainTitle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="#3A3B3C"
+            android:gravity="center"
+            android:text="Routine"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <FrameLayout
+            android:id="@+id/mainFragment"
+            android:name="com.example.workout365.WorkoutFragment"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/navbar"
+            android:layout_below="@id/mainTitle" />
+
+        <ImageButton
+            android:id="@+id/editButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignRight="@id/mainTitle"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/editicon" />
+
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
