@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.UserDictionary;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 
@@ -35,12 +36,17 @@ import com.example.workout365.data.WorkoutProvider;
 
 import java.util.ArrayList;
 
-public class ExerciseFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {  //Implements allows us to refresh cursor
+public class ExerciseFragment extends Fragment {  //Implements allows us to refresh cursor
     SimpleCursorAdapter adapter;
     ListView ExerciseList;
     View view;
     ArrayList<String> exercise = new ArrayList<>();
+
     private static final int EXERCISE_LOADER = 1;
+    String[] columns = {
+            ExerciseContract.ExerciseTable._ID,
+            ExerciseContract.ExerciseTable.COLUMN_EXERCISE_NAME
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,14 +78,16 @@ public class ExerciseFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String[] columns = {
-                ExerciseContract.ExerciseTable._ID,
-                ExerciseContract.ExerciseTable.COLUMN_EXERCISE_NAME
-        };
+
+        loadListview();
+
+        //adapter.notifyDataSetChanged();
+    }
+
+    public void loadListview(){
         //getContentResolver().insert(ExerciseContract.ExerciseTable.CONTENT_URI, values);
         Cursor results = getActivity().getContentResolver().query(ExerciseContract.ExerciseTable.CONTENT_URI, columns, null, null, null);
 
-        //Cursor cursor =
         adapter = new SimpleCursorAdapter(
                 view.getContext(),
                 R.layout.exercise_listview,
@@ -100,14 +108,22 @@ public class ExerciseFragment extends Fragment implements LoaderManager.LoaderCa
                 Toast.makeText(getContext(),Integer.toString(id),Toast.LENGTH_SHORT).show();
                 //results.getInt(0) one cursor position i gives us our SQL db position
                 //results.getString: 1 = 3, 2 = test?
+                int rowsDeleted = 0;
+                String selectionClause = ExerciseContract.ExerciseTable._ID + " = ?";
+                String[] selectionArgs = {Integer.toString(id)};
 
+                rowsDeleted = getActivity().getContentResolver().delete(
+                        ExerciseContract.ExerciseTable.CONTENT_URI,
+                        selectionClause,
+                        selectionArgs
+                );
+
+                loadListview(); //We have to recall this after changing the data, as if we dont recall everything there are issues (like the onClickListener getting stuck on the deleted ID)
                 /*
                 TODO DELETE CODE HERE WITH ID
                  */
             }
         });
-
-        //adapter.notifyDataSetChanged();
     }
 
 
@@ -116,14 +132,8 @@ public class ExerciseFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onResume() { //We want to make sure the database hasnt changed when we view it here, so refresh each time.
         super.onResume();
-        adapter.notifyDataSetChanged(); //ReQuery not necessary anymore, only need to refresh this
-        /*String[] tempData = {"Today - Storm 8 / 12", "Tomorrow - Foggy 9 / 13", "Thurs - Rainy 8 / 13", "Fri - foggy 8 / 12",
-                "Sat - Sunny 9 / 14", "Sun - Sunny 10 / 15", "Mon - Sunny 11 / 15","Today - Storm 8 / 12", "Tomorrow - Foggy 9 / 13", "Thurs - Rainy 8 / 13", "Fri - foggy 8 / 12",
-                "Sat - Sunny 9 / 14", "Sun - Sunny 10 / 15", "Mon - Sunny 11 / 15"};*/
-
-        //ArrayList<String> exercise = new ArrayList<>();
-        //adapter = new ArrayAdapter(getContext(), R.layout.exercise_listview, R.id.exercise_item, tempData); //Exercise where tempData normally is
-        //
+        Log.i("ExerciseFragment", "OnResume");
+        loadListview();
 
 
 
@@ -132,28 +142,5 @@ public class ExerciseFragment extends Fragment implements LoaderManager.LoaderCa
 
 
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Log.i("ExerciseFragment","Creating Loader");
 
-        String[] columns = {
-                ExerciseContract.ExerciseTable._ID,
-                ExerciseContract.ExerciseTable.COLUMN_EXERCISE_NAME
-        };
-        Loader<Cursor> loader = new CursorLoader(view.getContext(), ExerciseContract.ExerciseTable.CONTENT_URI,columns,null,null,null);
-        return loader;
-    }
-
-
-
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        adapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.swapCursor(null);
-    }
 }

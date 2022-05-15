@@ -6,6 +6,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +18,9 @@ public class WorkoutProvider extends ContentProvider {
 
     public static final int EXERCISE = 100;
     public static final int EXERCISE_WITH_ID = 101;
+
+    public static final int ROUTINE = 102;
+    public static final int ROUTINE_WITH_ID = 103;
     private static final UriMatcher uriMatcher =  buildUriMatcher();
     public static WorkoutDBHelper myDBHelper;
 
@@ -28,6 +32,8 @@ public class WorkoutProvider extends ContentProvider {
 
         //Sets the code for a single row to 101. In this case, the # wildcard is used.
         matcher.addURI(ExerciseContract.CONTENT_AUTHORITY, ExerciseContract.PATH_EXERCISE+"/#", EXERCISE_WITH_ID);
+
+        matcher.addURI(RoutineContract.CONTENT_AUTHORITY,RoutineContract.PATH_ROUTINE, ROUTINE); //If we come through the routine path, we are set to the routine code for ROUTINE
 
         return matcher;
     }
@@ -71,18 +77,50 @@ public class WorkoutProvider extends ContentProvider {
                 if (_id > 0)
                     retUri = ExerciseContract.ExerciseTable.buildExerciseUriWithId(_id);
                 else{
-                    throw new SQLException("failed to insert");
+                    throw new SQLException("failed to insert"); //could move away from this exception and do it in other classes, to avoid activity crashing?
+                }
+                break;
+            }
+            case ROUTINE:{
+                SQLiteDatabase db = myDBHelper.getWritableDatabase();
+                long _id = db.insert(RoutineContract.RoutineTable.TABLE_NAME,null,values);
+                if (_id > 0)
+                    retUri = RoutineContract.RoutineTable.buildRoutineUriWithId(_id);
+                else{
+                    throw new SQLException("failed to insert"); //could move away from this exception and do it in other classes, to avoid activity crashing?
                 }
                 break;
             }
             default:
-
+                Log.i("WorkoutProvider", uri.toString());
+                Log.i("WorkoutProvider", Integer.toString(match_code));
                 throw new UnsupportedOperationException("Not yet implemented");
         }
         return retUri;
     }
 
+    //TODO Add Delete Functionality! Only for one exercise at a time
+    @Override
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
+        int match_code = uriMatcher.match(uri);
+        int numRowsDeleted;
+
+        switch(match_code){
+            case EXERCISE:{
+                numRowsDeleted = myDBHelper.getWritableDatabase().delete(
+                        ExerciseContract.ExerciseTable.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Not yet implemented " + uri);
+        }
+
+        return numRowsDeleted;
+    }
 
 
 
@@ -140,11 +178,7 @@ public class WorkoutProvider extends ContentProvider {
 
     }
 
-    //TODO Add Delete Functionality! Only for one exercise at a time
-    @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
-    }
+
 
     //May implement update features, may not  -  Implement this to handle requests to update one or more rows.
     @Override

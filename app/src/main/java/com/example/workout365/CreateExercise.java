@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CreateExercise extends AppCompatActivity {
-    Spinner difficultySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +30,6 @@ public class CreateExercise extends AppCompatActivity {
 
         String[] difficulties = {"Easy", "Medium", "Hard"};
         ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.difficulty_spin, difficulties);
-        difficultySpinner = (Spinner) findViewById(R.id.setExerciseDifficulty);
-
         setDifficulty.setAdapter(adapter);
 
     }

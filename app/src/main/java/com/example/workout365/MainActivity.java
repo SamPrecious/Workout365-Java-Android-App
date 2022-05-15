@@ -41,24 +41,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.i("TEST","On Creating");
         setContentView(R.layout.activity_main);
         //viewWorkout(null); //Automatically calls the routine page, so we start here
         updateWorkout();
         gestureDetector = new GestureDetectorCompat(this, new GestureListener());  //Initialises class to detect gestures
-        switch(currentFragmentState){  //Determines what button state we are currently in, and runs related function
-            case RoutineFragment:
-                Log.i("MainActivityCreate","Routine");
-                break;
-            case ExerciseFragment:
-                Log.i("MainActivityCreate","Exercise");
-                break;
-            case WorkoutFragment:
-                Log.i("MainActivityCreate","Workout");
-        }
+
 
     }
 
+    public void refreshScreen(){
+        switch(currentFragmentState){  //Determines what button state we are currently in, and runs related function
+            case RoutineFragment:
+                Log.i("refreshing","Routine");
+                updateRoutine();
+                break;
+            case ExerciseFragment:
+                Log.i("refreshing","Exercise");
+                updateExercise();
+                break;
+            case WorkoutFragment:
+                Log.i("refreshing","Workout");
+                updateWorkout();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + currentFragmentState);
+        }
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event){   //By using dispatchTouchEvent instead of onTouchEvent, the touchEvent works over items like views
@@ -90,13 +99,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void editRoutine(){
-        Toast.makeText(getApplicationContext(),"Editing Routine",Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(MainActivity.this, EditRoutine.class);
+        startActivity(intent);
+
     }
     public void addExercise(){
         Toast.makeText(getApplicationContext(),"Adding Exercise",Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(MainActivity.this, CreateExercise.class);
-        //intent.putExtra(key,extra); <- If we decide to parse anything through intent
         startActivity(intent);
     }
 
@@ -133,6 +144,18 @@ public class MainActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         getSupportFragmentManager().beginTransaction().replace(R.id.mainFragment, routineFragment).commit();
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        outState.putSerializable("CurrentState", currentFragmentState);  //Saves the current enum of our state
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        currentFragmentState = (buttonState) savedInstanceState.get("CurrentState");
+        refreshScreen();
     }
 
     public void updateExercise(){
@@ -177,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
 
     }
+
 
 
 

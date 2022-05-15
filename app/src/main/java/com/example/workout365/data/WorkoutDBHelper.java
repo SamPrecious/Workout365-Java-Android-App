@@ -23,13 +23,18 @@ public class WorkoutDBHelper extends SQLiteOpenHelper{
         myDB = db;
         Log.i("WorkoutHelper", "Creating table");  //Only runs on first initiliasation of device, dont actually need 'IF NOT EXISTS'
 
-
+        //Creates tables
         myDB.execSQL(ExerciseContract.SQL_CREATE_ENTRIES);
+        myDB.execSQL(RoutineContract.SQL_CREATE_ENTRIES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db,  int oldVersion, int newVersion) {
         String upgradeExercise = "DROP TABLE IF EXISTS " + ExerciseContract.ExerciseTable.TABLE_NAME;
+        String upgradeRoutine = "DROP TABLE IF EXISTS " + RoutineContract.RoutineTable.TABLE_NAME;
+
+        myDB.execSQL(upgradeExercise);
+        myDB.execSQL(upgradeRoutine);
         onCreate(myDB);
     }
 }

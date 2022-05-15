@@ -27,9 +27,6 @@ public class ExerciseContract {
     public static final class ExerciseTable implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_EXERCISE).build();
 
-
-
-
         //table name
         public static final String TABLE_NAME = "EXERCISE_TABLE";
         //Column Name
