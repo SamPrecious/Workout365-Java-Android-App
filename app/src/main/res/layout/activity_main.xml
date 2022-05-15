@@ -39,8 +39,6 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginVertical="8dp"
-                android:layout_marginStart="27dp"
-                android:layout_marginBottom="10dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="viewWorkout"
                 android:scaleType="fitXY"
@@ -58,8 +56,6 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginVertical="8dp"
-                android:layout_marginStart="27dp"
-                android:layout_marginBottom="10dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="viewRoutine"
                 android:scaleType="fitXY"
@@ -77,8 +73,6 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginVertical="8dp"
-                android:layout_marginStart="27dp"
-                android:layout_marginBottom="10dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="viewExercise"
                 android:scaleType="fitXY"
@@ -115,15 +109,18 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_above="@+id/navbar"
-            android:layout_below="@id/mainTitle" />
+            android:layout_below="@id/mainTitle"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="-1dp" />
 
         <ImageButton
-            android:id="@+id/editButton"
+            android:id="@+id/variableButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignRight="@id/mainTitle"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
+            android:onClick="variableButton"
             app:srcCompat="@drawable/editicon" />
 
 

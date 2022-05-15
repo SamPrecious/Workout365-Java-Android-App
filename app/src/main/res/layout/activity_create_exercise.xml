@@ -7,4 +7,84 @@
     android:layout_height="match_parent"
     tools:context=".CreateExercise">
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <TextView
+      android:id="@+id/mainTitle"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:background="#3A3B3C"
+      android:gravity="center"
+      android:text="New Exercise"
+      android:textColor="#FFFFFF"
+      android:textSize="20dp"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <EditText
+      android:id="@+id/setExerciseName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
+      android:ems="10"
+      android:hint="Name"
+      android:maxLength="16"
+      android:inputType="textPersonName"
+      android:minHeight="48dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/mainTitle"
+      tools:visibility="visible" />
+
+  <EditText
+      android:id="@+id/setExerciseDescription"
+      android:layout_width="@+id/setExerciseName"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="50dp"
+      android:ems="10"
+      android:hint="description"
+      android:gravity="start|top"
+      android:inputType="textMultiLine"
+      android:lines="4"
+      android:maxLength="200"
+      app:layout_constraintEnd_toEndOf="@+id/setExerciseName"
+      app:layout_constraintStart_toStartOf="@+id/setExerciseName"
+      app:layout_constraintTop_toBottomOf="@+id/setExerciseName" />
+
+  <Spinner
+      android:id="@+id/setExerciseDifficulty"
+      android:layout_width="@+id/setExerciseDescription"
+      android:layout_height="wrap_content"
+      android:contentDescription="Difficulty"
+      android:minHeight="48dp"
+      android:layout_marginTop="3dp"
+      android:overlapAnchor="false"
+      android:popupBackground="@android:color/transparent"
+      app:layout_constraintEnd_toEndOf="@+id/setExerciseDescription"
+      app:layout_constraintStart_toStartOf="@+id/setExerciseDescription"
+      app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+  <Button
+      android:id="@+id/saveButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Save"
+      android:onClick="saveExercise"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/setExerciseDifficulty" />
+
+  <TextView
+      android:id="@+id/textView"
+      android:layout_width="@+id/setExerciseDifficulty"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="50dp"
+      android:text="Difficulty"
+      android:textSize="20dp"
+      app:layout_constraintEnd_toEndOf="@+id/setExerciseDifficulty"
+      app:layout_constraintStart_toStartOf="@+id/setExerciseDifficulty"
+      app:layout_constraintTop_toBottomOf="@+id/setExerciseDescription" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

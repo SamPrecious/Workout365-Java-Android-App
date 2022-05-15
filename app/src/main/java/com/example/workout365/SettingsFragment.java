@@ -1,20 +1,26 @@
 package com.example.workout365;
 
 import android.content.SharedPreferences;
+import android.gesture.Gesture;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.text.InputType;
-import android.widget.EditText;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 
-import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.view.GestureDetectorCompat;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
 
         addPreferencesFromResource(R.xml.preferences);
 
@@ -27,7 +33,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         repsPref.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);  //forces us to input numbers to avoid bugs
         setsPref.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
+
+
     }
+
+
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -38,6 +49,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         cityPref.setSummary(sharedPreferences.getString(key, ""));
 
     }
+
+
 
     @Override
     public void onResume() {
