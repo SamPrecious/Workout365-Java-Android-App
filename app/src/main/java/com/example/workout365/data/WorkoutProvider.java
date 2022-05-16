@@ -108,9 +108,26 @@ public class WorkoutProvider extends ContentProvider {
 
         switch(match_code){
             case EXERCISE:{
+                //Delete from Exercise Table
                 numRowsDeleted = myDBHelper.getWritableDatabase().delete(
                         ExerciseContract.ExerciseTable.TABLE_NAME,
                         selection,
+                        selectionArgs
+                );
+                //Deletes routines that contain the same exercise
+                myDBHelper.getWritableDatabase().delete(
+                        RoutineContract.RoutineTable.TABLE_NAME,
+                        RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME + " = ?",
+                        selectionArgs
+                );
+                break;
+            }
+            case ROUTINE:{
+                //Deletes routines by exercise name
+                numRowsDeleted = myDBHelper.getWritableDatabase().delete(
+                        RoutineContract.RoutineTable.TABLE_NAME,
+                        RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME + " = ?"
+                        + "AND " + RoutineContract.RoutineTable.COLUMN_DAY + " = ?",
                         selectionArgs
                 );
                 break;
@@ -133,16 +150,26 @@ public class WorkoutProvider extends ContentProvider {
         String[] selectionArgs,
         String sortOrder){
         int match_code = uriMatcher.match(uri);
+        Cursor myCursor;
 
         switch(match_code){
 
             //If the incoming URI is for all of Exercise table (so ID 100)
             case EXERCISE: {
-                if(TextUtils.isEmpty(sortOrder)) sortOrder = "_ID ASC"; // <- Sets default sort order, will uncomment if we want to set sort order, but we dont yet
                 Log.i("WorkoutProvider", "querying for EXERCISE");
 
                 selection = null;
                 selectionArgs = null;
+
+                myCursor = myDBHelper.getWritableDatabase().query(
+                        ExerciseContract.ExerciseTable.TABLE_NAME, //Table to Query
+                        projection, //Columns
+                        null, // Columns for the "where" clause
+                        null, // Values for the "where" clause
+                        null, // columns to group by
+                        null, // columns to filter by row groups
+                        null // sort order
+                );
 
                 break;
             }
@@ -154,25 +181,49 @@ public class WorkoutProvider extends ContentProvider {
                 //Strange bug, says this line never happens
                 selection = selection + "_ID = " + uri.getLastPathSegment(); //For where clause, currently based on _ID, could change
                 Log.i("WorkoutProvider", "querying for EXERCISE with ID");
+
+                myCursor = myDBHelper.getWritableDatabase().query(
+                        ExerciseContract.ExerciseTable.TABLE_NAME, //Table to Query
+                        projection, //Columns
+                        selection, // Columns for the "where" clause
+                        selectionArgs, // Values for the "where" clause
+                        null, // columns to group by
+                        null, // columns to filter by row groups
+                        null // sort order
+                );
+
+                break;
+            }
+            case ROUTINE:{
+
+                Log.i("WorkoutProvider", "querying for ROUTINE");
+                /*
+                myCursor = myDBHelper.getWritableDatabase().query(
+                        RoutineContract.RoutineTable.TABLE_NAME, //Table to Query
+                        projection, //Columns
+                        selection, // Not null, will contain DAY column
+                        selectionArgs, // Will contain value for day column
+                        null, // columns to group by
+                        null, // columns to filter by row groups
+                        null // sort order
+                );*/
+
+                //Here we use a raw query, as cursor requires _ID which we dont have, but SQLite has column numbers hidden by default, which we can name ID
+                myCursor = myDBHelper.getReadableDatabase().rawQuery("SELECT rowid _id," + RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME + " FROM "
+                        + RoutineContract.RoutineTable.TABLE_NAME + " WHERE " + selection, selectionArgs);  //Selection args contains day, selection contains query by day row
                 break;
             }
 
             default:
-                Log.e("ExerciseQuery", "URI not recognised");
+                Log.e("Query", "URI not recognised");
+                Log.e("ExerciseQuery", Integer.toString(match_code));
+                Log.e("ExerciseQuery", uri.toString());
                 throw new UnsupportedOperationException("Not yet implemented");
 
 
         }
 
-        Cursor myCursor = myDBHelper.getWritableDatabase().query(
-                ExerciseContract.ExerciseTable.TABLE_NAME, //Table to Query
-                projection, //Columns
-                selection, // Columns for the "where" clause
-                selectionArgs, // Values for the "where" clause
-                null, // columns to group by
-                null, // columns to filter by row groups
-                null // sort order
-        );
+
         myCursor.setNotificationUri(getContext().getContentResolver(),uri);  //Flags if the database is updated
         return myCursor;
 

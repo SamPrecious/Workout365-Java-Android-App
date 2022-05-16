@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,6 +24,8 @@ public class EditRoutine extends AppCompatActivity {
     Spinner setDay;
     Spinner addExercises;
     Cursor results;
+    ListView routineList;
+    String day;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +73,61 @@ public class EditRoutine extends AppCompatActivity {
         repsTV.setText(reps);  //Sets default values for convenience. Can be changed
         setsTV.setText(sets);
 
+
+        setDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                day = setDay.getSelectedItem().toString();
+                loadListView();
+            }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
+            }
+        });
+
+
+    }
+
+    //populates the listview
+    public void loadListView(){
+        String[] columns = {
+                RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME
+        };
+        String selectionClause = RoutineContract.RoutineTable.COLUMN_DAY + " = ?";
+
+        String[] selectionArgs = {day};  //Queries Routines based on the current day.
+        Cursor results = getContentResolver().query(RoutineContract.RoutineTable.CONTENT_URI, columns, selectionClause, selectionArgs, null);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                R.layout.routine_listview,
+                results,
+                new String[] {RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME},
+                new int[]{R.id.routine_item},
+                0
+        );
+
+        routineList = (ListView) findViewById(R.id.routineLV);
+        routineList.setAdapter(adapter);
+
+
+        routineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String name = results.getString(1); //Gives us the exercise name
+                Toast.makeText(getApplicationContext(),name,Toast.LENGTH_SHORT).show();
+
+                String[] deleteSelectionArgs = {name, day};
+
+                getApplicationContext().getContentResolver().delete(
+                        RoutineContract.RoutineTable.CONTENT_URI,
+                        null, //Null as its always by exercise_name and day, so its defined in the provider
+                        deleteSelectionArgs
+                );
+
+                loadListView(); //Refresh
+
+            }
+        });
+
     }
 
     public void saveEdit(View view){
@@ -103,9 +162,10 @@ public class EditRoutine extends AppCompatActivity {
 
                 getContentResolver().insert(RoutineContract.RoutineTable.CONTENT_URI, values); //Parses the new values through the URI, to insert into the database
 
-
+                loadListView(); //Refresh view
             }
         }
+
 
 
     }

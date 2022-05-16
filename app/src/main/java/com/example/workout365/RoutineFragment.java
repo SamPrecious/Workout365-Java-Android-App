@@ -1,5 +1,6 @@
 package com.example.workout365;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,12 +8,23 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.example.workout365.data.ExerciseContract;
+import com.example.workout365.data.RoutineContract;
 
 
 public class RoutineFragment extends Fragment {
-
+    Spinner getDay;
+    String day;
+    View view;
+    ListView routineList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,11 +37,51 @@ public class RoutineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_routine, container, false);
+        view = inflater.inflate(R.layout.fragment_routine, container, false);
 
-        TextView tvRoutine = (TextView) view.findViewById(R.id.tvRoutine);
-        tvRoutine.setText("Test");
+
+        getDay = (Spinner) view.findViewById(R.id.getDay);
+        String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday","Sunday"};
+
+        ArrayAdapter dayAdapter = new ArrayAdapter(getContext(), R.layout.day_spin, days);
+        getDay.setAdapter(dayAdapter);
+
+        getDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                day = getDay.getSelectedItem().toString();
+                loadListView();
+            }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
+            }
+        });
+
 
         return view;
+    }
+
+    public void loadListView(){
+        String[] columns = {
+                RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME
+        };
+        String selectionClause = RoutineContract.RoutineTable.COLUMN_DAY + " = ?";
+
+        String[] selectionArgs = {day};  //Queries Routines based on the current day.
+        Cursor results = getActivity().getContentResolver().query(RoutineContract.RoutineTable.CONTENT_URI, columns, selectionClause, selectionArgs, null);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                view.getContext(),
+                R.layout.fullroutine_listview,
+                results,
+                new String[] {RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME},
+                new int[]{R.id.fullroutine_item},
+                0
+        );
+
+
+        routineList = (ListView) view.findViewById(R.id.viewRoutine);
+        routineList.setAdapter(adapter);
+
+
+
     }
 }

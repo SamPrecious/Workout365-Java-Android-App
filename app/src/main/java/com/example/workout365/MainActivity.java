@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton editButton = findViewById(R.id.variableButton);
         editButton.setImageResource(R.drawable.editicon);  //Changes the image to the create icon
         editButton.setVisibility(View.VISIBLE); //Shows the button
-        fragmentState = "Routine";
+        fragmentState = "routine";
 
         Context context = getApplicationContext();
         getSupportFragmentManager().beginTransaction().replace(R.id.mainFragment, routineFragment).commit();
@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
             int velocityThreshold = 1000;  //This is the sensitivity that determines how hard it is to activate a gesture (stops accidental swipes)
             if(fragmentState == "workout"){
                 if(velocityX<velocityThreshold){
+                    Log.i("Moving", "Moving to Routine");
                     updateRoutine(); //Calls the viewRoutine class
                 }
             }else if(fragmentState == "routine"){
