@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Workout365">
         <activity
+            android:name=".FinishedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RunningRoutine"
+            android:exported="false" />
+        <activity
             android:name=".EditRoutine"
             android:exported="false" />
         <activity

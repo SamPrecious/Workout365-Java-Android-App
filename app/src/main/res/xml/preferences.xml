@@ -10,4 +10,9 @@
         android:title="Default Sets"
         android:key="sets"
         android:summary="Enter your default sets"/>
+    <EditTextPreference
+        android:defaultValue="0"
+        android:title="High Score"
+        android:key="highScore"
+        android:summary="Enter highscore"/>
 </PreferenceScreen>

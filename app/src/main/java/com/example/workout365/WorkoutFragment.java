@@ -1,5 +1,6 @@
 package com.example.workout365;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -26,6 +27,8 @@ import java.util.Locale;
 public class WorkoutFragment extends Fragment {
     View view;
     String day;
+    ListView WorkoutList;
+    Cursor results;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +53,16 @@ public class WorkoutFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v){ //Onclick defined here instead of in XML, so we can access the function on clicking
+            public void onClick(View v){ //Onclick defined here instead of in XML, so we can access the function on clicking <- Begins routine
 
+                if(WorkoutList.getCount() > 0){ //If todays routine isnt empty
+                    Intent intent = new Intent(getActivity(), RunningRoutine.class);
+                    intent.putExtra("day", day);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getContext(),"Currently nothing in todays routine",Toast.LENGTH_SHORT).show();
+
+                }
 
             }
         });
@@ -66,7 +77,7 @@ public class WorkoutFragment extends Fragment {
 
         String[] selectionArgs = {day};  //Queries Routines based on the day today (i.e. retrieves Tuedsays routine, so the exercises set on Tuesday)
         //Query returns LEFT Join of routine table where the day is todays day.
-        Cursor results = getActivity().getContentResolver().query(RoutineContract.RoutineTable.CONTENT_URI_EXERCISE, null, selectionClause, selectionArgs, null);  //Query by slightly different URI, as we want to return different values
+        results = getActivity().getContentResolver().query(RoutineContract.RoutineTable.CONTENT_URI_EXERCISE, null, selectionClause, selectionArgs, null);  //Query by slightly different URI, as we want to return different values
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 view.getContext(),
                 R.layout.todays_listview,
@@ -76,36 +87,10 @@ public class WorkoutFragment extends Fragment {
                 0
         );
 
-        /*
-        RESULTS FORMAT:
-            0 - ID
-            1 - Exercise Name
-            2 - Reps
-            3 - Sets
-            4 - Difficulty
-            5 - Description
-         */
-        results.moveToFirst();
-        results.moveToNext();
-        Log.i("WorkoutFragment", results.getString(1));
-        Log.i("WorkoutFragment", results.getString(2));
-        Log.i("WorkoutFragment", results.getString(3));
-        Log.i("WorkoutFragment", results.getString(4));
-        Log.i("WorkoutFragment", results.getString(5));
-        ListView WorkoutList = (ListView) view.findViewById(R.id.todaysRoutine);
+
+        WorkoutList = (ListView) view.findViewById(R.id.todaysRoutine);
         WorkoutList.setAdapter(adapter);
 
-        /*
-        TODO
-            Send cursor through to new Activity
-            OnCreate moveToFirst
-            OnButtonPress moveToNext (if valid)
-            Add current score (difficulty 1-3 * reps * sets)
-            When no longer valid, finish
-            If score higher than previously saved high score congratulate user (else maybe tell them the difference)
-
-
-         */
     }
 
 }
