@@ -9,6 +9,7 @@ public class RoutineContract {
     public static final String CONTENT_AUTHORITY = "com.example.workout365";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_ROUTINE = "routine";
+    public static final String PATH_ROUTINE_EXERCISE = "routine_exercise";
 
     public RoutineContract() {};
     //Defines the create query for the Exercise Table
@@ -24,6 +25,7 @@ public class RoutineContract {
 
     public static final class RoutineTable implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ROUTINE).build();
+        public static final Uri CONTENT_URI_EXERCISE = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ROUTINE_EXERCISE).build();
 
         public static final String TABLE_NAME = "ROUTINE_TABLE";
         //Column Names

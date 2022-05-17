@@ -119,8 +119,8 @@
             android:layout_height="50dp"
             android:layout_alignRight="@id/mainTitle"
             android:background="?selectableItemBackgroundBorderless"
-            android:scaleType="fitXY"
             android:onClick="variableButton"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/editicon" />
 
 

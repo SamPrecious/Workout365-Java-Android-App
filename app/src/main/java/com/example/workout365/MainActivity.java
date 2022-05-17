@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public void beginWorkout(View view){  //Called in the workout fragment
+
+    }
 
     public void refreshScreen(){
         switch(currentFragmentState){  //Determines what button state we are currently in, and runs related function

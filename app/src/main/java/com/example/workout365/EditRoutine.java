@@ -87,7 +87,7 @@ public class EditRoutine extends AppCompatActivity {
 
     }
 
-    //populates the listview
+    //populates the listview with database values
     public void loadListView(){
         String[] columns = {
                 RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME
@@ -129,6 +129,11 @@ public class EditRoutine extends AppCompatActivity {
         });
 
     }
+
+    public void finishTask(View view){
+        finish(); //Returns us to main activity
+    }
+
 
     public void saveEdit(View view){
         EditText repsTV = findViewById(R.id.repsEdit);

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class RoutineFragment extends Fragment {
 
         getDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                day = getDay.getSelectedItem().toString();
+
                 loadListView();
             }
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -60,14 +61,21 @@ public class RoutineFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadListView(); //Refreshes list view
+    }
+
     public void loadListView(){
         String[] columns = {
                 RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME
         };
         String selectionClause = RoutineContract.RoutineTable.COLUMN_DAY + " = ?";
-
+        day = getDay.getSelectedItem().toString(); //Gets day in spinner
         String[] selectionArgs = {day};  //Queries Routines based on the current day.
-        Cursor results = getActivity().getContentResolver().query(RoutineContract.RoutineTable.CONTENT_URI, columns, selectionClause, selectionArgs, null);
+       Cursor results = getActivity().getContentResolver().query(RoutineContract.RoutineTable.CONTENT_URI, columns, selectionClause, selectionArgs, null);
+
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 view.getContext(),
                 R.layout.fullroutine_listview,

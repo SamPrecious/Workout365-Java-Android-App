@@ -20,7 +20,8 @@ public class WorkoutProvider extends ContentProvider {
     public static final int EXERCISE_WITH_ID = 101;
 
     public static final int ROUTINE = 102;
-    public static final int ROUTINE_WITH_ID = 103;
+    public static final int ROUTINE_EXERCISE = 103;
+
     private static final UriMatcher uriMatcher =  buildUriMatcher();
     public static WorkoutDBHelper myDBHelper;
 
@@ -34,6 +35,7 @@ public class WorkoutProvider extends ContentProvider {
         matcher.addURI(ExerciseContract.CONTENT_AUTHORITY, ExerciseContract.PATH_EXERCISE+"/#", EXERCISE_WITH_ID);
 
         matcher.addURI(RoutineContract.CONTENT_AUTHORITY,RoutineContract.PATH_ROUTINE, ROUTINE); //If we come through the routine path, we are set to the routine code for ROUTINE
+        matcher.addURI(RoutineContract.CONTENT_AUTHORITY,RoutineContract.PATH_ROUTINE_EXERCISE, ROUTINE_EXERCISE); //The path for the ROUTINE and EXERCISE table query
 
         return matcher;
     }
@@ -197,23 +199,32 @@ public class WorkoutProvider extends ContentProvider {
             case ROUTINE:{
 
                 Log.i("WorkoutProvider", "querying for ROUTINE");
-                /*
-                myCursor = myDBHelper.getWritableDatabase().query(
-                        RoutineContract.RoutineTable.TABLE_NAME, //Table to Query
-                        projection, //Columns
-                        selection, // Not null, will contain DAY column
-                        selectionArgs, // Will contain value for day column
-                        null, // columns to group by
-                        null, // columns to filter by row groups
-                        null // sort order
-                );*/
 
                 //Here we use a raw query, as cursor requires _ID which we dont have, but SQLite has column numbers hidden by default, which we can name ID
                 myCursor = myDBHelper.getReadableDatabase().rawQuery("SELECT rowid _id," + RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME + " FROM "
                         + RoutineContract.RoutineTable.TABLE_NAME + " WHERE " + selection, selectionArgs);  //Selection args contains day, selection contains query by day row
                 break;
             }
+            case ROUTINE_EXERCISE:{
 
+                //A query to get the exercise details contained within the routine table. We get both tables with a LEFT JOIN
+                String query = "SELECT R.rowid _id, R."+ RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME +", R."+ RoutineContract.RoutineTable.COLUMN_REPS + ", R."+RoutineContract.RoutineTable.COLUMN_SETS+
+                        ", E." + ExerciseContract.ExerciseTable.COLUMN_DIFFICULTY + ", E." + ExerciseContract.ExerciseTable.COLUMN_DESCRIPTION +" FROM " + RoutineContract.RoutineTable.TABLE_NAME + " R" +
+                        " LEFT JOIN "+ ExerciseContract.ExerciseTable.TABLE_NAME + " E"+ " ON R." + RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME +
+                        " = E."+ExerciseContract.ExerciseTable.COLUMN_EXERCISE_NAME + " WHERE " + selection;
+                Log.i("Query", query);
+
+
+                myCursor = myDBHelper.getReadableDatabase().rawQuery(query, selectionArgs);  //Selection args contains day, selection contains query by day row
+                break;
+
+                /*
+                WORKING:
+                myCursor = myDBHelper.getReadableDatabase().rawQuery("SELECT rowid _id," + RoutineContract.RoutineTable.COLUMN_EXERCISE_NAME + ", " + RoutineContract.RoutineTable.COLUMN_REPS + ", " + RoutineContract.RoutineTable.COLUMN_SETS +" FROM "
+                        + RoutineContract.RoutineTable.TABLE_NAME + " WHERE " + selection, selectionArgs);  //Selection args contains day, selection contains query by day row
+                break;
+                 */
+            }
             default:
                 Log.e("Query", "URI not recognised");
                 Log.e("ExerciseQuery", Integer.toString(match_code));
