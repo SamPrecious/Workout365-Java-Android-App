@@ -2,6 +2,7 @@ package com.example.workout365;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -14,7 +15,8 @@ import java.util.TimerTask;
 //This service acts as an idle timeout service
 //This aims to help motivation, as if a user is procrastinating we can kick them back into gear
 public class CustomService extends Service {
-    private static Timer timer = new Timer();
+    private static Timer timer;
+    MediaPlayer mp;
 
     @Override
     public IBinder onBind(Intent arg0){
@@ -36,7 +38,8 @@ public class CustomService extends Service {
     {
         public void run()
         {
-            Log.i("Damn Son", "Teresting");
+            Log.i("CustomService", "Idle");
+            mp.start();
             toastHandler.sendEmptyMessage(0);
         }
     }
@@ -47,6 +50,7 @@ public class CustomService extends Service {
         @Override
         public void handleMessage(Message msg)
         {
+            //Plays motivational sound and requests the user come back via toast
             Toast.makeText(getApplicationContext(), "Come back", Toast.LENGTH_SHORT).show();
         }
     };
@@ -55,7 +59,6 @@ public class CustomService extends Service {
     public void onDestroy(){
         timer.cancel();
         super.onDestroy();
-        Toast.makeText(this,"Service Stopped", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -63,8 +66,9 @@ public class CustomService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+        mp = MediaPlayer.create(this, R.raw.timetoexercise);
         //Toast.makeText(this,"Service Started", Toast.LENGTH_SHORT).show();
-
+        timer = new Timer();
         startService();
     }
 

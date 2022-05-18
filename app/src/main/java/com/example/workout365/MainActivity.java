@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void refreshScreen(){
+        rebootService();
         switch(currentFragmentState){  //Determines what button state we are currently in, and runs related function
             case RoutineFragment:
                 Log.i("refreshing","Routine");
@@ -107,17 +108,23 @@ public class MainActivity extends AppCompatActivity {
 
     //Casts the update commands to normal views
     public void viewWorkout(View view){ //Instead of calling viewWorkout(null) when called within Gestures, we have simplified this, by having an updateWorkout function, making it more simple
-
-        startService(new Intent(getBaseContext(), CustomService.class));
+        rebootService();
         updateWorkout();
     }
     public void viewRoutine(View view){
-
-        stopService(new Intent(getBaseContext(), CustomService.class));
+        rebootService();
         updateRoutine();
     }
     public void viewExercise(View view){
+        rebootService();
         updateExercise();
+    }
+
+
+    //Resets the service idle countdown (as we have shown we arent idle)
+    public void rebootService(){
+        stopService(new Intent(getBaseContext(), CustomService.class));
+        startService(new Intent(getBaseContext(), CustomService.class));
     }
 
     public void variableButton(View view){
