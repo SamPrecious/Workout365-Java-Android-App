@@ -1,0 +1,130 @@
+@charset "utf-8";
+body {
+  font: 1.5em/1.6 Verdana, Arial, Helvetica, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  color: #000;
+}
+header,
+section,
+aside,
+article,
+figure {
+  display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding-right: 2%;
+  padding-left: 2%;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Calibri;
+}
+
+#wrapper {
+  width: 100%;
+  max-width: 960px;
+  min-width: 350px;
+  margin: 0 auto;
+  background-color: #3a3b3c;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+header {
+  width: 100%;
+  background-color: #3a3b3c; /*ffa500*/
+  overflow: hidden;
+}
+header h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 4em;
+}
+header img {
+  float: left;
+  margin-right: 1.04%;
+}
+
+article {
+  padding: 0;
+  width: 62.5%;
+  float: left;
+  background-color: #ffffff;
+}
+article h1 {
+  font-size: 2.57em;
+}
+
+blockquote p {
+  padding: 0 2.88%;
+}
+
+/* Images resizable: */
+img {
+  max-width: 100%;
+}
+aside {
+  float: left;
+  width: 18.74%;
+  background-color: #3a3b3c; /*ffa500*/
+  color: #fff;
+  padding: 1.04% 0;
+}
+aside h1 {
+  padding: 0 8.33%;
+  font-size: 1.43em;
+}
+aside ol {
+  font-size: 0.86em;
+  margin: 0 0 11.11% 11.11%;
+}
+
+@media screen and (max-width: 439px) {
+  header h1 {
+    font-size: 2em;
+  }
+  article h1 {
+    font-size: 1em;
+  }
+  nav,
+  article,
+  aside {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 440px) and (max-width: 760px) {
+  header h1 {
+    font-size: 3em;
+  }
+  article h1 {
+    font-size: 1.5em;
+  }
+  nav {
+    width: 30%;
+    padding: 0;
+    order: 1;
+  }
+  aside {
+    width: 70%;
+    padding: 0;
+    order: 2;
+  }
+  article {
+    width: 100%;
+    order: 3;
+  }
+}

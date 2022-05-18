@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.workout365">
+    package="com.example.workout365" >
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:id="@android:id/list"
@@ -15,11 +16,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Workout365">
+        android:theme="@style/Theme.Workout365" >
+        <activity
+            android:name=".UserGuide"
+            android:exported="false" />
         <activity
             android:name=".ViewFirebase"
             android:exported="false"
-            android:parentActivityName=".CreateExercise"/>
+            android:parentActivityName=".CreateExercise" />
         <activity
             android:name=".FinishedActivity"
             android:exported="false" />
@@ -39,7 +43,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

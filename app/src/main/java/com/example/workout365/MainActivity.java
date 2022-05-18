@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -316,6 +317,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         }
+        else if(id == R.id.help){
+            help();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -329,6 +333,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void help(){
+        Intent webIntent = new Intent(MainActivity.this, UserGuide.class);
+        startActivity(webIntent);
+    }
 
 
     public void findGym(){

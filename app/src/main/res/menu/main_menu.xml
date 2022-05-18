@@ -8,5 +8,8 @@
     <item
         android:title="Find Nearby Gym"
         android:id="@+id/action_find_gym"/>
+    <item
+        android:title="Help"
+        android:id="@+id/help"/>
 
 </menu>
