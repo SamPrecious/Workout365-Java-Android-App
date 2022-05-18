@@ -1,27 +1,36 @@
 package com.example.workout365;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GestureDetectorCompat;
 
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-    ArrayAdapter workoutAdapter;
     WorkoutFragment workoutFragment = new WorkoutFragment();
     RoutineFragment routineFragment = new RoutineFragment();
     ExerciseFragment exerciseFragment = new ExerciseFragment();
@@ -37,21 +46,38 @@ public class MainActivity extends AppCompatActivity {
 
     private GestureDetectorCompat gestureDetector;
     private String fragmentState; //The current state the fragment is in, used so we can determine where gestures move to
-
+    private static final int REQUEST_IMAGE_CAPTURE = 52;  //unique id for capturing image
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("TEST","On Creating");
         setContentView(R.layout.activity_main);
         //viewWorkout(null); //Automatically calls the routine page, so we start here
         updateWorkout();
         gestureDetector = new GestureDetectorCompat(this, new GestureListener());  //Initialises class to detect gestures
 
+        setAlarm();
 
-    }
-    public void beginWorkout(View view){  //Called in the workout fragment
 
+        createNotificationChannel();
     }
+
+
+    /*
+      Creates a channel for notifications!
+      Only necessary for OREO and above, so we only do it in these scenarios
+     */
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel("My Notification","ReminderChannel", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Our notification channel for reminders & motivational notifications");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+
+
+
+
 
     public void refreshScreen(){
         switch(currentFragmentState){  //Determines what button state we are currently in, and runs related function
@@ -81,9 +107,13 @@ public class MainActivity extends AppCompatActivity {
 
     //Casts the update commands to normal views
     public void viewWorkout(View view){ //Instead of calling viewWorkout(null) when called within Gestures, we have simplified this, by having an updateWorkout function, making it more simple
+
+        startService(new Intent(getBaseContext(), CustomService.class));
         updateWorkout();
     }
     public void viewRoutine(View view){
+
+        stopService(new Intent(getBaseContext(), CustomService.class));
         updateRoutine();
     }
     public void viewExercise(View view){
@@ -132,9 +162,96 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainFragment, workoutFragment).commit();
 
+
+
+
     }
+
+
+    /*
+    Sets an alarm for 24 hours. The goal is that if the user opened the app at this time, it will probably fit with their schedule tomorrow as well
+     */
+    public void setAlarm(){
+        Intent intent = new Intent(MainActivity.this, RemindMeBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        //Sets alarm in 24 hours
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    //Requests permission for camera
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+
+                } else {
+                    Toast.makeText(getApplicationContext(),"Cannot open Camera without permission",Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+    //Sets profile picture on button
+    public void checkPermissions(View view){
+
+        //Checks if user has granted camera permission
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+            //Yes so try it
+            setProfilePicture();
+        }else{
+            //No so requests permission
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                //If the user has now accepted the permission, then take the picture
+                setProfilePicture();
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){ //if successfull
+
+            Bundle extras = data.getExtras();
+            if(extras != null){
+                Bitmap profileBitmap =  (Bitmap) extras.get("data");
+                ImageButton profilePic = (ImageButton) findViewById(R.id.profilePic);
+                profilePic.setImageBitmap(profileBitmap);
+            }
+        }
+    }
+
+    public void setProfilePicture(){
+        Intent takeProfilePhoto =  new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //if (takeProfilePhoto.resolveActivity(getPackageManager()) == null) {
+        startActivityForResult(takeProfilePhoto, REQUEST_IMAGE_CAPTURE);
+
+    }
+
     public void updateRoutine(){
+
+        /*
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_DAY,
+                AlarmManager.INTERVAL_DAY, pendingIntent);*/
+
+
+        /* Creates notif in 5 secs
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        long timeAtButtonClick = System.currentTimeMillis();
+        long fiveSeconds = 500 * 10;
+
+
+        //RTC_WAKEUP wakes up the device to shoot the pending intent
+        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                timeAtButtonClick + fiveSeconds,
+                pendingIntent);*/
+
+
+
         currentFragmentState = buttonState.RoutineFragment;  //This tells us the button should do the routine function
+
 
         //ArrayList<String> workouts = new ArrayList<>();
         TextView mainTitle = findViewById(R.id.mainTitle);

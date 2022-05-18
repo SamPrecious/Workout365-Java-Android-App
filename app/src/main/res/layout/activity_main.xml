@@ -123,6 +123,16 @@
             android:scaleType="fitXY"
             app:srcCompat="@drawable/editicon" />
 
+        <ImageButton
+            android:id="@+id/profilePic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignLeft="@id/mainTitle"
+            android:background="?selectableItemBackgroundBorderless"
+            android:onClick="checkPermissions"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/profilepictureicon" />
+
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

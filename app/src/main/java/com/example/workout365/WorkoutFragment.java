@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -55,12 +57,27 @@ public class WorkoutFragment extends Fragment {
             @Override
             public void onClick(View v){ //Onclick defined here instead of in XML, so we can access the function on clicking <- Begins routine
 
+
+                //Creates a motivational message for if the user gets distracted and opens the notification bar
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification");
+
+                builder.setContentTitle("Get back to the exercise");
+                builder.setContentText("Stay motivated and remember, you got this!");
+                builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+                builder.setAutoCancel(true);
+
+                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+                managerCompat.notify(1, builder.build()); //1 is unique id
+
+
+
+
                 if(WorkoutList.getCount() > 0){ //If todays routine isnt empty
                     Intent intent = new Intent(getActivity(), RunningRoutine.class);
                     intent.putExtra("day", day);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(getContext(),"Currently nothing in todays routine",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Currently nothing in today's routine",Toast.LENGTH_SHORT).show();
 
                 }
 

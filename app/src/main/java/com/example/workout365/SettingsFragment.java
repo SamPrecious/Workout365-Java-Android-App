@@ -23,7 +23,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
 
         addPreferencesFromResource(R.xml.preferences);
-
         SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
         EditTextPreference repsPref = (EditTextPreference) findPreference("reps");
         EditTextPreference setsPref = (EditTextPreference) findPreference("sets");

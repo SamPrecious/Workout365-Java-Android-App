@@ -104,19 +104,14 @@ public class ExerciseFragment extends Fragment {  //Implements allows us to refr
         ExerciseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int id = results.getInt(0);
+
                 String name = results.getString(1);
-                Toast.makeText(getContext(),name,Toast.LENGTH_SHORT).show();
-                //results.getInt(0) one cursor position i gives us our SQL db position
-                //results.getString: 1 = 3, 2 = test?
-                int rowsDeleted = 0;
 
                 String selectionClause = ExerciseContract.ExerciseTable.COLUMN_EXERCISE_NAME + " = ?";  //OLD String selectionClause = ExerciseContract.ExerciseTable._ID + " = ?";
-
                 String[] selectionArgs = {name};
 
 
-                rowsDeleted = getActivity().getContentResolver().delete(
+                getActivity().getContentResolver().delete(
                         ExerciseContract.ExerciseTable.CONTENT_URI,
                         selectionClause,
                         selectionArgs
