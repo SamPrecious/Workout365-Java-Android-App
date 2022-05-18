@@ -1,5 +1,6 @@
 package com.example.workout365;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
@@ -15,9 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workout365.data.ExerciseContract;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateExercise extends AppCompatActivity {
 
@@ -40,6 +47,50 @@ public class CreateExercise extends AppCompatActivity {
         Log.i("CreateExercise","BackPressed");
         super.onBackPressed();
     }*/
+
+    public void viewFirebase(View view){
+        Intent intent = new Intent(CreateExercise.this, ViewFirebase.class);
+        startActivity(intent);
+    }
+
+    public void saveToFirebase(View view){
+        TextView setExerciseName = (TextView) findViewById(R.id.setExerciseName);
+        TextView setExerciseDescription = (TextView) findViewById(R.id.setExerciseDescription);
+        Spinner setExerciseDifficulty = (Spinner) findViewById(R.id.setExerciseDifficulty);
+
+        String exerciseName = setExerciseName.getText().toString();
+        String exerciseDescription = setExerciseDescription.getText().toString();
+
+        //Opens the firebase DB to get ready to write to
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> exercise = new HashMap<>();
+        exercise.put("exercise_name", exerciseName);
+        exercise.put("exercise_description", exerciseDescription);
+
+        Log.i("CreateExercise","QueryingFirebase");
+
+        //adds value to database
+        db.collection("exercise")
+                .add(exercise)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference){
+                        Log.i("CreateExercise", "DocumentSnapshot added with ID: " + documentReference.getId());
+                        Toast.makeText(getApplicationContext(),"Saved to firebase",Toast.LENGTH_SHORT).show();
+
+                    }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("CreateExercise", "Error adding document", e);
+                Toast.makeText(getApplicationContext(),"Failed to save",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
 
     public void saveExercise(View view){
 

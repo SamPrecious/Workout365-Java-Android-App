@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.workout365">
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-    android:id="@android:id/list"
+        android:id="@android:id/list"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Workout365">
-
+        <activity
+            android:name=".ViewFirebase"
+            android:exported="false"
+            android:parentActivityName=".CreateExercise"/>
         <activity
             android:name=".FinishedActivity"
             android:exported="false" />
@@ -40,7 +46,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".CustomService"/>
+
+        <service android:name=".CustomService" />
 
         <provider
             android:name=".data.WorkoutProvider"

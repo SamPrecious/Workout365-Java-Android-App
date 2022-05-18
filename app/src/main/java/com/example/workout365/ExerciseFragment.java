@@ -1,24 +1,12 @@
 package com.example.workout365;
 
 
-import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentProvider;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.provider.UserDictionary;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 
 
 import android.database.Cursor;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -28,11 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.workout365.data.ExerciseContract;
-import com.example.workout365.data.WorkoutProvider;
 
 import java.util.ArrayList;
 
