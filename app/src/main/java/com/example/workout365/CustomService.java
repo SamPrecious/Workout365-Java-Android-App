@@ -23,15 +23,11 @@ public class CustomService extends Service {
         //On bind enables us to bind activity to serivce (lets activity directly access members and methods in service), currently returns null as not in use
         return null;
     }
-    //If gone for more than 30 seconds, toast us when we are back to say HI!
-    /*
-    public int onStartCommand(Intent intent, int flags, int startId){
-        return START_STICKY; //When using start sticky, service keeps going until explictly stopped
-    }*/
 
     public void startService(){
         Log.i("Runnin","runnin");
-        timer.schedule(new runTimer(), 20000, 20000); //First is the delay, second is the time in milliseconds between operations
+        //notifies after 20 mins of inactivity, numbers can be tweaked if you want to test
+        timer.schedule(new runTimer(), 1200000 , 1200000 ); //First is the delay, second is the time in milliseconds between operations
     }
 
     private class runTimer extends TimerTask

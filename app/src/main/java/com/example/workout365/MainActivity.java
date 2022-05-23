@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Resets the service idle countdown (as we have shown we arent idle)
     public void rebootService(){
-        stopService(new Intent(getBaseContext(), CustomService.class));
-        startService(new Intent(getBaseContext(), CustomService.class));
+        stopService(new Intent(getBaseContext(), CustomService.class));  //Destroys timer
+        startService(new Intent(getBaseContext(), CustomService.class)); //to reset new one
     }
 
     public void variableButton(View view){

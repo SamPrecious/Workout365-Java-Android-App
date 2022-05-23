@@ -47,7 +47,6 @@ public class FinishedActivity extends AppCompatActivity {
 
     private void setShareActionIntent(String shareScore){
 
-        //Implicit intent NOT WORKING YET
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, shareScore);

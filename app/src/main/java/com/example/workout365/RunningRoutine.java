@@ -36,10 +36,16 @@ public class RunningRoutine extends AppCompatActivity {
         results.moveToFirst(); //Starts at the beginning of cursor
         setVariables();
 
+        rebootService();
 
         //results.moveToNext();
 
 
+    }
+    //Resets the service idle countdown (as we have shown we arent idle)
+    public void rebootService(){
+        stopService(new Intent(getBaseContext(), CustomService.class));  //Destroys timer
+        startService(new Intent(getBaseContext(), CustomService.class)); //to reset new one
     }
 
     public void nextExercise(){

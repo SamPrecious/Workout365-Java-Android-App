@@ -70,7 +70,6 @@ public class ExerciseFragment extends Fragment {  //Implements allows us to refr
     }
 
     public void loadListview(){
-        //getContentResolver().insert(ExerciseContract.ExerciseTable.CONTENT_URI, values);
         Cursor results = getActivity().getContentResolver().query(ExerciseContract.ExerciseTable.CONTENT_URI, columns, null, null, null);
 
         adapter = new SimpleCursorAdapter(
